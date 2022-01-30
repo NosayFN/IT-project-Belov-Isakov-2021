@@ -15,7 +15,6 @@ def hello_world():
 
 @app.route('/message', methods=["GET", "POST"])
 def message():
-    print(conf.url)
     if request.method == "POST":
         print(request.json)
         chat_id = request.json["message"]["chat"]["id"]
