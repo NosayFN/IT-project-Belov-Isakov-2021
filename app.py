@@ -26,7 +26,7 @@ def send_message(chat_id, text):
     method = "sendMessage"
     url = conf.url + method
     data = {"chat_id": chat_id, "text": text}
-    # requests.post(url, data=data)
+    requests.post(url, data=data)
 
 
 if __name__ == '__main__':
