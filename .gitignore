@@ -1,0 +1,5 @@
+MANIFEST
+.idea/
+__pycache__/
+venv/
+config.json
