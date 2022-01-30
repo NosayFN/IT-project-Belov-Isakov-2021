@@ -20,8 +20,8 @@ def message():
         print(request.json)
         chat_id = request.json["message"]["chat"]["id"]
         send_reply(chat_id, "And now " + request.json["message"]["from"]["username"] +
-                   "is asking for " + ["message"]["text"] +
-                   "at " + time.strftime("%D %H:%M", time.localtime(int(["message"]["date"]))))
+                   "is asking for " + request.json["message"]["text"] +
+                   "at " + time.strftime("%D %H:%M", time.localtime(int(request.json["message"]["date"]))))
     return {"ok": True}
 
 
