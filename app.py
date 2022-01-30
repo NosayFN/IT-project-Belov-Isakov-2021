@@ -22,7 +22,7 @@ def message():
     return {"ok": True}
 
 
-def send_message(chat_id, text):
+def send_reply(chat_id, text):
     method = "sendMessage"
     url = conf.url + method
     data = {"chat_id": chat_id, "text": text}
