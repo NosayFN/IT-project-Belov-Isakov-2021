@@ -18,7 +18,7 @@ def message():
     if request.method == "POST":
         print(request.json)
         chat_id = request.json["message"]["chat"]["id"]
-        send_message(chat_id, "pong")
+        send_reply(chat_id, "pong")
     return {"ok": True}
 
 
