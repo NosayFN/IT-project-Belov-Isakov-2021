@@ -17,7 +17,7 @@ class BaseMessage(DummyMessage):
         self._message = json["message"]
 
     def _get_header(self):
-        return "And now " + self._message["from"]["username"] + " "
+        return self._message["from"]["username"] + " "
 
     def _get_footer(self):
         return " at " + time.strftime("%D %H:%M", time.localtime(int(self._message["date"]))) + "."
@@ -63,7 +63,7 @@ def parse_request(json):
         elif json["message"].get("left_chat_member", None) is not None:
             return RemoveMemberMessage(json)
         else:
-            # unexpected (yet?) message type
+            # unexpected (or not supported yet?) message type, f.e. sticker
             return BaseMessage(json)
     else:
         # unexpected message structure
