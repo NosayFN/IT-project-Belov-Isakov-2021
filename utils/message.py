@@ -34,21 +34,21 @@ class BaseMessage(DummyMessage):
 class AddMemberMessage(BaseMessage):
     def get_reply(self):
         return self._get_header() + \
-               " added member " + self._message["new_chat_member"].get("username", "Unknown") + \
+               "added member " + self._message["new_chat_member"].get("username", "Unknown") + \
                self._get_footer()
 
 
 class RemoveMemberMessage(BaseMessage):
     def get_reply(self):
         return self._get_header() + \
-               " removed member " + self._message["left_chat_member"].get("username", "Unknown") + \
+               "removed member " + self._message["left_chat_member"].get("username", "Unknown") + \
                self._get_footer()
 
 
 class Message(BaseMessage):
     def get_reply(self):
         return self._get_header() + \
-               " is asking for " + self._message["text"] + \
+               "is asking for " + self._message["text"] + \
                self._get_footer()
 
 
