@@ -1,8 +1,7 @@
 from flask import Flask, request
 import requests
-import time
 
-from utils import Config
+from utils import Config, parse_request
 
 app = Flask(__name__)
 
@@ -17,28 +16,10 @@ def hello_world():
 @app.route('/message', methods=["GET", "POST"])
 def message():
     if request.method == "POST":
-        print("got request:", request.json)
-        msg = request.json.get("message", None)
-        if msg is None:
-            return {"ok": True}
-        chat = msg.get("chat", None)
-        if chat is None:
-            return {"ok": True}
-        chat_id = chat.get("id", None)
-        new_chat_member = msg.get("new_chat_member", None)
-        left_chat_member = msg.get("left_chat_member", None)
-        text = msg.get("text", None)
-        reply = " sent something unexpected"
-        if new_chat_member:
-            reply = " added member " + new_chat_member.get("username")
-        elif left_chat_member:
-            reply = " removed member " + left_chat_member.get("username")
-        elif text:
-            reply = " is asking for " + text
-
-        send_reply(chat_id, "And now " + request.json["message"]["from"]["username"] +
-                   reply +
-                   " at " + time.strftime("%D %H:%M", time.localtime(int(request.json["message"]["date"]))))
+        msg = parse_request(request.json)
+        reply = msg.get_reply()
+        if reply is not None:
+            send_reply(msg.get_chat_id(), reply)
     return {"ok": True}
 
 
