@@ -25,9 +25,15 @@ def message():
         if chat is None:
             return {"ok": True}
         chat_id = chat.get("id", None)
-        text = msg.get("text", "None")
+        new_chat_member = msg.get("new_chat_member", None)
+        text = msg.get("text", None)
+        reply = " sent something unexpected"
+        if new_chat_member:
+            reply = " added new member " + new_chat_member.get("username")
+        if text:
+            reply = " is asking for " + text
         send_reply(chat_id, "And now " + request.json["message"]["from"]["username"] +
-                   " is asking for " + text +
+                   reply +
                    " at " + time.strftime("%D %H:%M", time.localtime(int(request.json["message"]["date"]))))
     return {"ok": True}
 
