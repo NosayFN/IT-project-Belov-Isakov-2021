@@ -26,12 +26,16 @@ def message():
             return {"ok": True}
         chat_id = chat.get("id", None)
         new_chat_member = msg.get("new_chat_member", None)
+        left_chat_member = msg.get("left_chat_member", None)
         text = msg.get("text", None)
         reply = " sent something unexpected"
         if new_chat_member:
-            reply = " added new member " + new_chat_member.get("username")
-        if text:
+            reply = " added member " + new_chat_member.get("username")
+        elif left_chat_member:
+            reply = " removed member " + new_chat_member.get("username")
+        elif text:
             reply = " is asking for " + text
+
         send_reply(chat_id, "And now " + request.json["message"]["from"]["username"] +
                    reply +
                    " at " + time.strftime("%D %H:%M", time.localtime(int(request.json["message"]["date"]))))
