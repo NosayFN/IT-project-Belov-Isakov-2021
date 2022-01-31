@@ -20,11 +20,11 @@ class BaseMessage(DummyMessage):
         return "And now " + self._message["from"]["username"] + " "
 
     def _get_footer(self):
-        return "at " + time.strftime("%D %H:%M", time.localtime(int(self._message["date"]))) + "."
+        return " at " + time.strftime("%D %H:%M", time.localtime(int(self._message["date"]))) + "."
 
     def get_reply(self):
         return self._get_header() + \
-               "sent something unexpected " + \
+               "sent something unexpected" + \
                self._get_footer()
 
     def get_chat_id(self):
