@@ -17,10 +17,17 @@ def hello_world():
 @app.route('/message', methods=["GET", "POST"])
 def message():
     if request.method == "POST":
-        print(request.json)
-        chat_id = request.json["message"]["chat"]["id"]
+        print("got request:", request.json)
+        msg = request.json.get("message", None)
+        if msg is None:
+            return {"ok": True}
+        chat = msg.get("chat", None)
+        if chat is None:
+            return {"ok": True}
+        chat_id = chat.get("id", None)
+        text = msg.get("text", None)
         send_reply(chat_id, "And now " + request.json["message"]["from"]["username"] +
-                   "is asking for " + request.json["message"]["text"] +
+                   "is asking for " + text +
                    " at " + time.strftime("%D %H:%M", time.localtime(int(request.json["message"]["date"]))))
     return {"ok": True}
 
