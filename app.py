@@ -32,7 +32,7 @@ def message():
         if new_chat_member:
             reply = " added member " + new_chat_member.get("username")
         elif left_chat_member:
-            reply = " removed member " + new_chat_member.get("username")
+            reply = " removed member " + left_chat_member.get("username")
         elif text:
             reply = " is asking for " + text
 
