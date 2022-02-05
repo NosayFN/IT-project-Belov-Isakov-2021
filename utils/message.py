@@ -1,4 +1,5 @@
 import time
+import traceback
 from utils.command import get_command_processor
 
 
@@ -60,8 +61,8 @@ class Message(BaseMessage):
             command_processor = get_command_processor(command)
             try:
                 reply = command_processor.process()
-            except Exception as ex:
-                print(ex)
+            except Exception:
+                print(traceback.format_exc())
                 reply = "Application error. Please refer to logs"
         return reply
 
