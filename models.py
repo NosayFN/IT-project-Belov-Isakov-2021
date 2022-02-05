@@ -3,7 +3,7 @@ from sqlalchemy.dialects.postgresql import JSON
 
 
 class User(db.Model):
-    __tablename__ = 'user'
+    __tablename__ = 'users'
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String())
@@ -19,7 +19,7 @@ class User(db.Model):
 
 
 class Section(db.Model):
-    __tablename__ = 'section'
+    __tablename__ = 'sections'
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String())
