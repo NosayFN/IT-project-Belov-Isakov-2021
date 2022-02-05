@@ -4,9 +4,15 @@ import os
 class Config(object):
     # Global instance
     _instance = None
+    _database_url = None
+    DEBUG = True
+    CSRF_ENABLED = True
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SQLALCHEMY_DATABASE_URI = None
 
     def __init__(self):
         self._token = os.environ.get('TOKEN', None)
+        self.SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL', None)
         Config._instance = self
 
     @classmethod

@@ -1,11 +1,18 @@
 from flask import Flask, request
+from flask_sqlalchemy import SQLAlchemy
 import requests
 
 from utils import Config, parse_request
 
+conf = Config.get_instance()
+
 app = Flask(__name__)
 
-conf = Config.get_instance()
+app.config.from_object(conf)
+
+db = SQLAlchemy(app)
+
+from models import User
 
 
 @app.route('/')
