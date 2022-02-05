@@ -1,4 +1,5 @@
 from models import User, Section
+from app import db
 
 
 class BaseCommand(object):
@@ -17,7 +18,8 @@ class RegisterUserCommand(BaseCommand):
 
 class ListUserCommand(BaseCommand):
     def process(self):
-        return "List of registered users:"
+        users = User.query.all()
+        return "List of registered users:" + users
 
 
 class HelpCommand(BaseCommand):

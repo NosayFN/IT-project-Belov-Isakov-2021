@@ -50,7 +50,7 @@ class Message(BaseMessage):
     def get_reply(self):
         return self._get_header() + \
                "is asking for " + self._message["text"] + \
-               self._get_footer() + "\nResult:\n" + \
+               self._get_footer() + "\n**Reply**\n" + \
                self.process_command()
 
     def process_command(self):

@@ -9,10 +9,6 @@ class User(db.Model):
     name = db.Column(db.String())
     class_id = db.Column(db.String())
 
-    def __init__(self, name, class_id):
-        self.name = name
-        self.class_id = class_id
-
     def __repr__(self):
         return '<id: {}, class {}, name: {}>'.\
             format(self.id, self.class_id, self.name)
