@@ -16,7 +16,7 @@ class RegisterUserCommand(BaseCommand):
     pass
 
 
-class ListUserCommand(BaseCommand):
+class ListUsersCommand(BaseCommand):
     def process(self):
         users = User.query.all()
         return "List of registered users:" + users
@@ -42,7 +42,7 @@ def get_command_processor(command):
         return HelpCommand(command)
     elif command.startswith('/register_user'):
         return RegisterUserCommand(command)
-    elif command.startswith('/list_user'):
-        return ListUserCommand(command)
+    elif command.startswith('/list_users'):
+        return ListUsersCommand(command)
     else:
         return DummyCommand(command)

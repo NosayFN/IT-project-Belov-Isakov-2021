@@ -55,11 +55,14 @@ class Message(BaseMessage):
 
     def process_command(self):
         command = str(self._message["text"])
+        reply = ""
         if command.startswith('/'):
             command_processor = get_command_processor(command)
-            return command_processor.process()
-        else:
-            return ""
+            try:
+                reply = command_processor.process()
+            except Exception:
+                reply = "Application error. Please refer to logs"
+        return reply
 
 
 def parse_request(json):
