@@ -19,16 +19,16 @@ class RegisterUserCommand(BaseCommand):
 class ListUsersCommand(BaseCommand):
     def process(self):
         users = User.query.all()
-        return "List of registered users:" + users
+        return "\tList of registered users:" + users
 
 
 class HelpCommand(BaseCommand):
     def process(self):
         help_command = \
-            "List of available commands:\n" \
-            "\t/help\n" \
-            "\t/register_user [name] [class]\n" \
-            "\t/list_user\n"
+            "\tList of available commands:\n" \
+            "\t\t/help\n" \
+            "\t\t/register_user [name] [class]\n" \
+            "\t\t/list_users\n"
         return help_command
 
 

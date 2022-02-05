@@ -50,7 +50,7 @@ class Message(BaseMessage):
     def get_reply(self):
         return self._get_header() + \
                "is asking for " + self._message["text"] + \
-               self._get_footer() + "\n**Reply**\n" + \
+               self._get_footer() + "\nReply:\n" + \
                self.process_command()
 
     def process_command(self):
@@ -60,7 +60,8 @@ class Message(BaseMessage):
             command_processor = get_command_processor(command)
             try:
                 reply = command_processor.process()
-            except Exception:
+            except Exception as ex:
+                print(ex)
                 reply = "Application error. Please refer to logs"
         return reply
 
