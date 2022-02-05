@@ -11,11 +11,11 @@ class User(db.Model):
 
     def __repr__(self):
         return '<id: {}, name: {}, class: {}>'.\
-            format(self.id, self.class_id, self.name)
+            format(self.id, self.name, self.class_id)
 
     def __str__(self):
         return 'name: {}, class: {}'.\
-            format(self.class_id, self.name)
+            format(self.name, self.class_id)
 
 
 class Section(db.Model):
