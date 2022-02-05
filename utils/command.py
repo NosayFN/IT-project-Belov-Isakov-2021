@@ -25,7 +25,7 @@ class RegisterUserCommand(BaseCommand):
 class ListUsersCommand(BaseCommand):
     def process(self):
         users = User.query.all()
-        return "\tList of registered users:\n\t\t" + "\t\t\n".join(str(user) for user in users)
+        return "\tList of registered users:\n\t\t" + "\n\t\t".join(str(user) for user in users)
 
 
 class HelpCommand(BaseCommand):

@@ -25,10 +25,6 @@ class Section(db.Model):
     name = db.Column(db.String())
     leader = db.Column(db.String())
 
-    def __init__(self, name, leader):
-        self.name = name
-        self.leader = leader
-
     def __repr__(self):
         return '<id: {}, name: {}, leader: {}>'.\
             format(self.id, self.name, self.leader)
