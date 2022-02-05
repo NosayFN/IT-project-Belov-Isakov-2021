@@ -20,13 +20,25 @@ class ListUserCommand(BaseCommand):
         return "List of registered users:"
 
 
+class HelpCommand(BaseCommand):
+    def process(self):
+        help_command = \
+            "List of available commands:\n" \
+            "\t/help\n" \
+            "\t/register_user [name] [class]\n" \
+            "\t/list_user\n"
+        return help_command
+
+
 class DummyCommand(BaseCommand):
     def process(self):
-        return "Unknown command"
+        return "Unknown command. Type /help to get commands list."
 
 
 def get_command_processor(command):
-    if command.startswith('/register_user'):
+    if command.startswith('/help'):
+        return HelpCommand(command)
+    elif command.startswith('/register_user'):
         return RegisterUserCommand(command)
     elif command.startswith('/list_user'):
         return ListUserCommand(command)
