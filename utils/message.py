@@ -1,5 +1,5 @@
 import time
-from .helpers import get_command_processor
+from utils.command import get_command_processor
 
 
 class DummyMessage(object):
@@ -60,3 +60,22 @@ class Message(BaseMessage):
             return command_processor.process()
         else:
             return ""
+
+
+def parse_request(json):
+    print("got request:", json)
+
+    if json.get("message", None) is not None:
+        if json["message"].get("text", None) is not None:
+            return Message(json)
+        elif json["message"].get("new_chat_member", None) is not None:
+            return AddMemberMessage(json)
+        elif json["message"].get("left_chat_member", None) is not None:
+            return RemoveMemberMessage(json)
+        else:
+            # unexpected (or not supported yet?) message type, f.e. sticker
+            return BaseMessage(json)
+    else:
+        # unexpected message structure
+        # possibly some technical message?
+        return DummyMessage(json)
