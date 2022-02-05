@@ -13,7 +13,12 @@ class BaseCommand(object):
 
 
 class RegisterUserCommand(BaseCommand):
-    pass
+    def process(self):
+        name, class_id = self.command.split(":")
+        new_user = User(name=name, class_id=class_id)
+        db.session.add(new_user)
+        db.session.commit()
+        return "\tUser '" + new_user + "' added!"
 
 
 class ListUsersCommand(BaseCommand):
@@ -27,7 +32,7 @@ class HelpCommand(BaseCommand):
         help_command = \
             "\tList of available commands:\n" \
             "\t\t/help\n" \
-            "\t\t/register_user [name] [class]\n" \
+            "\t\t/register_user [name]:[class]\n" \
             "\t\t/list_users\n"
         return help_command
 

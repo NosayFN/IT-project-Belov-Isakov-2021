@@ -10,8 +10,12 @@ class User(db.Model):
     class_id = db.Column(db.String())
 
     def __repr__(self):
-        return '<id: {}, class {}, name: {}>'.\
+        return '<id: {}, name: {}, class: {}>'.\
             format(self.id, self.class_id, self.name)
+
+    def __str__(self):
+        return 'name: {}, class: {}'.\
+            format(self.class_id, self.name)
 
 
 class Section(db.Model):
