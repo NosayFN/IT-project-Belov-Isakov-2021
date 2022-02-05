@@ -1,5 +1,5 @@
 import time
-from .helpers import get_command_processor
+from utils import get_command_processor
 
 
 class DummyMessage(object):

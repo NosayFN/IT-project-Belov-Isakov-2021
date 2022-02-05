@@ -1,5 +1,5 @@
 from .message import Message, BaseMessage, DummyMessage, AddMemberMessage, RemoveMemberMessage
-from .command import DummyCommand, RegisterCommand, ListCommand
+from .command import DummyCommand, RegisterUserCommand, ListUserCommand
 
 
 def parse_request(json):
