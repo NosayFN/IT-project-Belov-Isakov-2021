@@ -12,8 +12,6 @@ app.config.from_object(conf)
 
 db = SQLAlchemy(app)
 
-from models import User
-
 
 @app.route('/')
 def hello_world():

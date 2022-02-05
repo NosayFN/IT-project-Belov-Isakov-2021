@@ -1,4 +1,5 @@
 import time
+from .helpers import get_command_processor
 
 
 class DummyMessage(object):
@@ -49,23 +50,13 @@ class Message(BaseMessage):
     def get_reply(self):
         return self._get_header() + \
                "is asking for " + self._message["text"] + \
-               self._get_footer()
+               self._get_footer() + "\nResult:\n" + \
+               self.process_command()
 
-
-def parse_request(json):
-    print("got request:", json)
-
-    if json.get("message", None) is not None:
-        if json["message"].get("text", None) is not None:
-            return Message(json)
-        elif json["message"].get("new_chat_member", None) is not None:
-            return AddMemberMessage(json)
-        elif json["message"].get("left_chat_member", None) is not None:
-            return RemoveMemberMessage(json)
+    def process_command(self):
+        command = str(self._message["text"])
+        if command.startswith('/'):
+            command_processor = get_command_processor(command)
+            return command_processor.process()
         else:
-            # unexpected (or not supported yet?) message type, f.e. sticker
-            return BaseMessage(json)
-    else:
-        # unexpected message structure
-        # possibly some technical message?
-        return DummyMessage(json)
+            return ""
