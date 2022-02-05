@@ -14,11 +14,12 @@ class BaseCommand(object):
 
 class RegisterUserCommand(BaseCommand):
     def process(self):
-        name, class_id = self.command.split(":")
-        new_user = User(name=name, class_id=class_id)
+        cmd = self.command.replace('/register_user', '')
+        name, class_id = cmd.split(":")
+        new_user = User(name=name.strip(), class_id=class_id.strip())
         db.session.add(new_user)
         db.session.commit()
-        return "\tUser '" + new_user + "' added!"
+        return "\tUser '" + str(new_user) + "' added!"
 
 
 class ListUsersCommand(BaseCommand):
