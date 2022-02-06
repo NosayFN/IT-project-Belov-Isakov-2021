@@ -8,14 +8,16 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String())
     class_id = db.Column(db.String())
+    telegram_id = db.Column(db.String())
+    telegram_name = db.Column(db.String())
 
     def __repr__(self):
-        return '<id: {}, name: {}, class: {}>'.\
-            format(self.id, self.name, self.class_id)
+        return '<id: {}, name: {}, class: {}, added by: {}>'.\
+            format(self.id, self.name, self.class_id, self.telegram_name)
 
     def __str__(self):
-        return 'name: {}, class: {}'.\
-            format(self.name, self.class_id)
+        return 'name: {}, class: {}, added by: {}'.\
+            format(self.name, self.class_id, self.telegram_name)
 
 
 class Section(db.Model):

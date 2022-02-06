@@ -58,7 +58,7 @@ class Message(BaseMessage):
         command = str(self._message["text"])
         reply = ""
         if command.startswith('/'):
-            command_processor = get_command_processor(command)
+            command_processor = get_command_processor(self._message)
             try:
                 reply = command_processor.process()
             except Exception:
@@ -70,12 +70,12 @@ class Message(BaseMessage):
 def parse_request(json):
     print("got request:", json)
 
-    if json.get("message", None) is not None:
-        if json["message"].get("text", None) is not None:
+    if json.get("message", None):
+        if json["message"].get("text", None):
             return Message(json)
-        elif json["message"].get("new_chat_member", None) is not None:
+        elif json["message"].get("new_chat_member", None):
             return AddMemberMessage(json)
-        elif json["message"].get("left_chat_member", None) is not None:
+        elif json["message"].get("left_chat_member", None):
             return RemoveMemberMessage(json)
         else:
             # unexpected (or not supported yet?) message type, f.e. sticker

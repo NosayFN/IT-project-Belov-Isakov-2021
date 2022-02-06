@@ -4,9 +4,11 @@ from app import db
 
 class BaseCommand(object):
     command = None
+    person = None
 
-    def __init__(self, command):
+    def __init__(self, command, person):
         self.command = command
+        self.person = person
 
     def process(self):
         raise Exception('Not implemented')
@@ -16,7 +18,14 @@ class RegisterUserCommand(BaseCommand):
     def process(self):
         cmd = self.command.replace('/register_user', '')
         name, class_id = cmd.split(":")
-        new_user = User(name=name.strip(), class_id=class_id.strip())
+        telegram_id = self.person["id"]
+        telegram_name = self.person["username"]
+        new_user = User(
+            name=name.strip(),
+            class_id=class_id.strip(),
+            telegram_id=telegram_id,
+            telegram_name=telegram_name
+        )
         db.session.add(new_user)
         db.session.commit()
         return "\tUser '" + str(new_user) + "' added!"
@@ -43,12 +52,14 @@ class DummyCommand(BaseCommand):
         return "Unknown command. Type /help to get commands list."
 
 
-def get_command_processor(command):
+def get_command_processor(message):
+    command = str(message["text"])
+    person = message["from"]
     if command.startswith('/help'):
-        return HelpCommand(command)
+        return HelpCommand(command, person)
     elif command.startswith('/register_user'):
-        return RegisterUserCommand(command)
+        return RegisterUserCommand(command, person)
     elif command.startswith('/list_users'):
-        return ListUsersCommand(command)
+        return ListUsersCommand(command, person)
     else:
-        return DummyCommand(command)
+        return DummyCommand(command, person)
