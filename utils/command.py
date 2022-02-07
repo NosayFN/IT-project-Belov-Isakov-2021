@@ -36,24 +36,24 @@ class RegisterUserCommand(BaseCommand):
 
 class SetUserRoleCommand(BaseCommand):
     roles = {
-        0: "guest",
-        1: "user",
-        2: "superuser",
-        7: "admin"
+        "guest": 0,
+        "user": 1,
+        "superuser": 2,
+        "admin": 7
     }
 
     def process(self):
         cmd = self.command.replace('/set_user_role', '')
         user_id, role = cmd.split(":")
         user_id = int(user_id.strip())
-        role = int(role.strip())
+        role = role.strip()
         if role not in self.roles.keys():
             return "\tRole '{}' does not exist!".format(role)
         user = User.query.filter_by(id=user_id).first()
         if user:
-            user.role = role
+            user.role = self.roles.get(role)
             db.session.commit()
-            return "\tUser '{} ({})' updated with new role ''!".format(user.name, user.id, self.roles.get(role))
+            return "\tUser '{} ({})' updated with new role ''!".format(user.name, user.id, role)
         else:
             return "\tUser '{}' not found!".format(user_id)
 
@@ -87,7 +87,7 @@ class HelpCommand(BaseCommand):
     def inline_help(cls, command):
         return {
             "/register_user": " [name]:[class]",
-            "/set_user_role": " [id]:[role], where role is 1 for user, 2 for superuser, 7 for admin",
+            "/set_user_role": " [id]:[role], where role is one of the following: <guest,user,superuser,admin>",
         }.get(command, "")
 
 
