@@ -63,7 +63,7 @@ class Message(BaseMessage):
                 reply = command_processor.process()
             except Exception:
                 print(traceback.format_exc())
-                reply = "Application error. Please refer to logs"
+                reply = "Application error. Please refer for logs"
         return reply
 
 
