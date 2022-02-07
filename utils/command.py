@@ -109,7 +109,7 @@ def get_command_processor(message):
 def get_person_role(person):
     users = User.query.filter_by(telegram_id=str(person["id"])).all()
     role = max((u.role for u in users), default=0)
-    print('role:', Roles[role].name)
+    print('role:', Roles(role).name)
     return role
 
 
