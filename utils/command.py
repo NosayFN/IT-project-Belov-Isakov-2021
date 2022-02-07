@@ -48,15 +48,15 @@ class HelpCommand(BaseCommand):
         self.person_commands = person_commands
 
     def process(self):
-        help_command = "\tList of available commands:\n"
+        help_command = ["\tList of available commands:"]
         for command in self.person_commands:
-            help_command += "\t\t" + command + self.inline_help(command)
-        return help_command
+            help_command.append("\t\t" + command + self.inline_help(command))
+        return "\n".join(help_command)
 
     @classmethod
     def inline_help(cls, command):
         return {
-            '/register_user': " [name]:[class]\n"
+            '/register_user': " [name]:[class]"
         }.get(command, "\n")
 
 
@@ -95,19 +95,19 @@ def get_person_commands(role):
     ]
     # user commands
     if role == 1:
-        commands.append([
+        commands.append(
             "/list_users",
-        ])
+        )
     # superuser commands
     if 1 < role < 7:
-        commands.append([
+        commands.extend([
             "/list_sections",
             "/add_section",
             "/remove_section",
         ])
     # admin commands
     if role == 7:
-        commands.append([
+        commands.extend([
             "/set_user_role",
         ])
     return commands
