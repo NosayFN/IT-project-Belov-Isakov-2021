@@ -53,7 +53,7 @@ class SetUserRoleCommand(BaseCommand):
         if user:
             user.role = self.roles.get(role)
             db.session.commit()
-            return "\tUser '{} ({})' updated with new role ''!".format(user.name, user.id, role)
+            return "\tUser '{} ({})' updated with new role '{}'!".format(user.name, user.id, role)
         else:
             return "\tUser '{}' not found!".format(user_id)
 
