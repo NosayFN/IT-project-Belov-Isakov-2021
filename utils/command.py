@@ -73,7 +73,7 @@ def get_command_processor(message):
 def get_person_role(person):
     # stmt = select(User.role).where(User.telegram_id == person["id"])
     # result = db.session.execute(stmt)
-    users = User.query.filter_by(telegram_id=person["id"]).all()
+    users = User.query.filter_by(telegram_id=str(person["id"])).all()
     print('users', users)
     role = max((u.role for u in users), default=1)
     print('role: ', role)
