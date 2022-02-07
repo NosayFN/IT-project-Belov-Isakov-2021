@@ -34,6 +34,16 @@ class RegisterUserCommand(BaseCommand):
         return "\tUser '" + str(new_user) + "' added!"
 
 
+class SetUserRoleCommand(BaseCommand):
+    def process(self):
+        cmd = self.command.replace('/set_user_role', '')
+        user_id, role = cmd.split(":")
+        user = User.query.filter_by(id=int(user_id.strip())).first()
+        user.role = int(role.strip())
+        db.session.commit()
+        return "\tUser '" + str(user.id) + " " + str(user.name) + "' updated!"
+
+
 class ListUsersCommand(BaseCommand):
     person_role = 0
 
@@ -83,6 +93,8 @@ def get_command_processor(message):
         return RegisterUserCommand(command, person)
     elif is_command_allowed(command, '/list_users', person_commands):
         return ListUsersCommand(command, person, person_role)
+    elif is_command_allowed(command, '/set_user_role', person_commands):
+        return SetUserRoleCommand(command, person)
     else:
         return DummyCommand(command, person)
 
