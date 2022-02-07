@@ -53,6 +53,55 @@ class AddSectionCommand(BaseCommand):
             return "\tLeader id '{}' not found!".format(user_id)
 
 
+class ChangeSectionCommand(BaseCommand):
+    def process(self):
+        cmd = self.command.replace('/change_section', '')
+        section_id, name, leader_id = cmd.split(":")
+        section_id = int(section_id.strip())
+        name = name.strip()
+        leader_id = int(leader_id.strip())
+        leader = User.query.filter_by(id=leader_id).first()
+        section = Section.query.filter_by(id=section_id).first()
+        if not leader:
+            return "\tLeader id '{}' not found!".format(leader_id)
+        if not section:
+            return "\tSection id '{}' not found!".format(section_id)
+        if not name:
+            return "\tName is not set!"
+
+        section.name = name
+        section.leader_id = leader.id
+        section.leader_name = leader.name
+        db.session.commit()
+        return "\tSection '{}' changed. New name is '{}', leader is '{}'!".format(section.id, section.name, leader.name)
+
+
+class RemoveSectionCommand(BaseCommand):
+    def process(self):
+        cmd = self.command.replace('/remove_section', '')
+        section_id = cmd
+        section_id = int(section_id.strip())
+        section = Section.query.filter_by(id=section_id).first()
+        if not section:
+            return "\tSection id '{}' not found!".format(section_id)
+
+        db.session.delete(section)
+        db.session.commit()
+        return "\tSection '{}' deleted!".format(section_id)
+
+
+class ListSectionsCommand(BaseCommand):
+    person_role = 0
+
+    def __init__(self, command, person, person_role):
+        super().__init__(command, person)
+        self.person_role = person_role
+
+    def process(self):
+        sections = Section.query.all()
+        return "\tList of sections:\n\t\t" + "\n\t\t".join(section.get_str(self.person_role) for section in sections)
+
+
 class SetUserRoleCommand(BaseCommand):
     def process(self):
         cmd = self.command.replace('/set_user_role', '')
@@ -100,6 +149,8 @@ class HelpCommand(BaseCommand):
         return {
             "/register_user": " [name]:[class]",
             "/add_section": " [id]:[name], where id is leader id",
+            "/change_section": " [id]:[name]:[leader_id], where id is section id",
+            "/remove_section": " [id], where id is section id",
             "/set_user_role": " [id]:[role], where id is user id, role is one of the following: <{}>".
                               format(", ".join([r.name for r in Roles])),
         }.get(command, "")
@@ -125,6 +176,12 @@ def get_command_processor(message):
         return SetUserRoleCommand(command, person)
     elif is_command_allowed(command, '/add_section', person_commands):
         return AddSectionCommand(command, person)
+    elif is_command_allowed(command, '/remove_section', person_commands):
+        return RemoveSectionCommand(command, person)
+    elif is_command_allowed(command, '/change_section', person_commands):
+        return ChangeSectionCommand(command, person)
+    elif is_command_allowed(command, '/list_sections', person_commands):
+        return ListSectionsCommand(command, person, person_role)
     else:
         return DummyCommand(command, person)
 
@@ -152,6 +209,7 @@ def get_person_commands(role):
         commands.extend([
             "/list_sections",
             "/add_section",
+            "/change_section",
             "/remove_section",
         ])
     # admin commands (role == 7)

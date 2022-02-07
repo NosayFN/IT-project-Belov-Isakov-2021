@@ -18,8 +18,8 @@ class User(db.Model):
 
     def get_str(self, role):
         if role == 7:
-            return 'id: {}, name: {}, class: {}, role: {}, added by: {}'.\
-                format(self.id, self.name, self.class_id, Roles(self.role).name, self.telegram_name + "(" + self.telegram_id + ")")
+            return 'id: {}, name: {}, class: {}, role: {}, added by: {} ({})'.\
+                format(self.id, self.name, self.class_id, Roles(self.role).name, self.telegram_name, + self.telegram_id)
         else:
             return str(self)
 
@@ -39,3 +39,14 @@ class Section(db.Model):
     def __repr__(self):
         return '<id: {}, name: {}, leader: {}>'.\
             format(self.id, self.name, self.leader)
+
+    def get_str(self, role):
+        if role >= 2:
+            return 'id: {}, name: {}, leader: {} ({})'.\
+                format(self.id, self.name, self.leader, self.leader_id)
+        else:
+            return str(self)
+
+    def __str__(self):
+        return 'name: {}, leader: {}'.\
+            format(self.name, self.leader)
