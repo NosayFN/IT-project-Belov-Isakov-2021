@@ -56,10 +56,12 @@ class AddSectionCommand(BaseCommand):
 class ChangeSectionCommand(BaseCommand):
     def process(self):
         cmd = self.command.replace('/change_section', '')
-        section_id, name, leader_id = cmd.split(":")
-        section_id = int(section_id.strip())
-        name = name.strip()
-        leader_id = int(leader_id.strip())
+        params = cmd.split(":")
+        if len(params) != 3:
+            return "\tNot enough parameters!"
+        section_id = int(params[0].strip())
+        name = params[1].strip()
+        leader_id = int(params[2].strip())
         leader = User.query.filter_by(id=leader_id).first()
         section = Section.query.filter_by(id=section_id).first()
         if not leader:
