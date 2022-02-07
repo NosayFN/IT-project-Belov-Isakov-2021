@@ -1,3 +1,5 @@
+from sqlalchemy import select
+
 from models import User, Section
 from app import db
 
@@ -56,6 +58,8 @@ class DummyCommand(BaseCommand):
 def get_command_processor(message):
     command = str(message["text"])
     person = message["from"]
+    person_role = get_person_role(person)
+    person_commands = get_person_commands(person_role)
     if command.startswith('/help'):
         return HelpCommand(command, person)
     elif command.startswith('/register_user'):
@@ -64,3 +68,16 @@ def get_command_processor(message):
         return ListUsersCommand(command, person)
     else:
         return DummyCommand(command, person)
+
+
+def get_person_role(person):
+    stmt = select(User).where(User.telegram_id == person["id"]).order_by(User.role)
+    result = db.session.execute(stmt)
+    print('result.scalars().all()', result.scalars().all())
+    role = max((row.User.role for row in result), default=1)
+    print('role: ', role)
+    return role
+
+
+def get_person_commands(role):
+    pass
