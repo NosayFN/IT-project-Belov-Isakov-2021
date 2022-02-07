@@ -41,13 +41,23 @@ class ListUsersCommand(BaseCommand):
 
 
 class HelpCommand(BaseCommand):
+    person_commands = []
+
+    def __init__(self, command, person, person_commands):
+        super().__init__(command, person)
+        self.person_commands = person_commands
+
     def process(self):
-        help_command = \
-            "\tList of available commands:\n" \
-            "\t\t/help\n" \
-            "\t\t/register_user [name]:[class]\n" \
-            "\t\t/list_users\n"
+        help_command = "\tList of available commands:\n"
+        for command in self.person_commands:
+            help_command += "\t\t" + command + self.inline_help(command)
         return help_command
+
+    @classmethod
+    def inline_help(cls, command):
+        return {
+            '/register_user': " [name]:[class]\n"
+        }.get(command, "\n")
 
 
 class DummyCommand(BaseCommand):
@@ -61,24 +71,49 @@ def get_command_processor(message):
     person_role = get_person_role(person)
     person_commands = get_person_commands(person_role)
     if command.startswith('/help'):
-        return HelpCommand(command, person)
-    elif command.startswith('/register_user'):
+        return HelpCommand(command, person, person_commands)
+    elif is_command_allowed(command, '/register_user', person_commands):
         return RegisterUserCommand(command, person)
-    elif command.startswith('/list_users'):
+    elif is_command_allowed(command, '/list_users', person_commands):
         return ListUsersCommand(command, person)
     else:
         return DummyCommand(command, person)
 
 
 def get_person_role(person):
-    # stmt = select(User.role).where(User.telegram_id == person["id"])
-    # result = db.session.execute(stmt)
     users = User.query.filter_by(telegram_id=str(person["id"])).all()
-    print('users', users)
-    role = max((u.role for u in users), default=1)
+    role = max((u.role for u in users), default=0)
     print('role: ', role)
     return role
 
 
 def get_person_commands(role):
-    pass
+    # guest commands
+    commands = [
+        "/help",
+        "/register_user",
+    ]
+    # user commands
+    if role == 1:
+        commands.append([
+            "/list_users",
+        ])
+    # superuser commands
+    if 1 < role < 7:
+        commands.append([
+            "/list_sections",
+            "/add_section",
+            "/remove_section",
+        ])
+    # admin commands
+    if role == 7:
+        commands.append([
+            "/set_user_role",
+        ])
+    return commands
+
+
+def is_command_allowed(command, prefix, person_commands):
+    if command.startswith(prefix) and prefix in person_commands:
+        return True
+    return False
