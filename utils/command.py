@@ -35,9 +35,15 @@ class RegisterUserCommand(BaseCommand):
 
 
 class ListUsersCommand(BaseCommand):
+    person_role = 0
+
+    def __init__(self, command, person, person_role):
+        super().__init__(command, person)
+        self.person_role = person_role
+
     def process(self):
         users = User.query.all()
-        return "\tList of registered users:\n\t\t" + "\n\t\t".join(str(user) for user in users)
+        return "\tList of registered users:\n\t\t" + "\n\t\t".join(user.get_str(self.person_role) for user in users)
 
 
 class HelpCommand(BaseCommand):
@@ -56,7 +62,8 @@ class HelpCommand(BaseCommand):
     @classmethod
     def inline_help(cls, command):
         return {
-            '/register_user': " [name]:[class]"
+            "/register_user": " [name]:[class]",
+            "/set_user_role": " [id]:[role], where role is 1 for user, 2 for superuser, 7 for admin",
         }.get(command, "")
 
 
@@ -75,7 +82,7 @@ def get_command_processor(message):
     elif is_command_allowed(command, '/register_user', person_commands):
         return RegisterUserCommand(command, person)
     elif is_command_allowed(command, '/list_users', person_commands):
-        return ListUsersCommand(command, person)
+        return ListUsersCommand(command, person, person_role)
     else:
         return DummyCommand(command, person)
 
@@ -88,24 +95,24 @@ def get_person_role(person):
 
 
 def get_person_commands(role):
-    # guest commands
+    # guest commands (role == 0)
     commands = [
         "/help",
         "/register_user",
     ]
-    # user commands
+    # user commands (role == 1)
     if role >= 1:
         commands.append(
             "/list_users",
         )
-    # superuser commands
+    # superuser commands (role == 2)
     if 1 < role <= 7:
         commands.extend([
             "/list_sections",
             "/add_section",
             "/remove_section",
         ])
-    # admin commands
+    # admin commands (role == 7)
     if role == 7:
         commands.extend([
             "/set_user_role",

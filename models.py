@@ -16,6 +16,13 @@ class User(db.Model):
         return '<id: {}, name: {}, class: {}, added by: {}>'.\
             format(self.id, self.name, self.class_id, self.telegram_name)
 
+    def get_str(self, role):
+        if role == 7:
+            return 'id: {}, name: {}, class: {}, role: {}, added by: {}'.\
+                format(self.id, self.name, self.class_id, self.role, self.telegram_id + " " + self.telegram_name)
+        else:
+            return str(self)
+
     def __str__(self):
         return 'name: {}, class: {}, added by: {}'.\
             format(self.name, self.class_id, self.telegram_name)
