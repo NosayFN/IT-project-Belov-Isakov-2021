@@ -20,7 +20,8 @@ class RegisterUserCommand(BaseCommand):
         cmd = self.command.replace('/register_user', '')
         name, class_id = cmd.split(":")
         telegram_id = self.person["id"]
-        telegram_name = self.person["username"]
+        telegram_name = self.person.get("username", None) or \
+            " ".join([self.person.get("first_name", "unknown"), self.person.get("last_name", "unknown")])
         new_user = User(
             name=name.strip(),
             class_id=class_id.strip(),

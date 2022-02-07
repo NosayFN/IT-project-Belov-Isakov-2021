@@ -19,7 +19,8 @@ class BaseMessage(DummyMessage):
         self._message = json["message"]
 
     def _get_header(self):
-        return self._message["from"]["username"] + " "
+        return self._message["from"].get("username", None) or \
+            " ".join([self.person.get("first_name", "unknown"), self.person.get("last_name", "unknown")]) + " "
 
     def _get_footer(self):
         return " at " + time.strftime("%D %H:%M", time.localtime(int(self._message["date"]))) + "."
