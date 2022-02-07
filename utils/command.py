@@ -23,6 +23,7 @@ class RegisterUserCommand(BaseCommand):
         new_user = User(
             name=name.strip(),
             class_id=class_id.strip(),
+            role=1,
             telegram_id=telegram_id,
             telegram_name=telegram_name
         )

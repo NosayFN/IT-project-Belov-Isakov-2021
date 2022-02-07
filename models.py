@@ -8,6 +8,7 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String())
     class_id = db.Column(db.String())
+    role = db.Column(db.Integer(), default=1, server_default="1", nullable=False)
     telegram_id = db.Column(db.String())
     telegram_name = db.Column(db.String())
 
