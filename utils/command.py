@@ -57,7 +57,7 @@ class HelpCommand(BaseCommand):
     def inline_help(cls, command):
         return {
             '/register_user': " [name]:[class]"
-        }.get(command, "\n")
+        }.get(command, "")
 
 
 class DummyCommand(BaseCommand):
@@ -94,12 +94,12 @@ def get_person_commands(role):
         "/register_user",
     ]
     # user commands
-    if role == 1:
+    if role >= 1:
         commands.append(
             "/list_users",
         )
     # superuser commands
-    if 1 < role < 7:
+    if 1 < role <= 7:
         commands.extend([
             "/list_sections",
             "/add_section",
