@@ -1,5 +1,12 @@
+from enum import Enum
 from app import db
-from sqlalchemy.dialects.postgresql import JSON
+
+
+class Roles(Enum):
+    guest = 0
+    user = 1
+    superuser = 2
+    admin = 7
 
 
 class User(db.Model):
@@ -19,7 +26,7 @@ class User(db.Model):
     def get_str(self, role):
         if role == 7:
             return 'id: {}, name: {}, class: {}, role: {}, added by: {}'.\
-                format(self.id, self.name, self.class_id, self.role, self.telegram_name + "(" + self.telegram_id + ")")
+                format(self.id, self.name, self.class_id, Roles(self.role).name, self.telegram_name + "(" + self.telegram_id + ")")
         else:
             return str(self)
 

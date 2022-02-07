@@ -1,6 +1,4 @@
-from sqlalchemy import select
-
-from models import User, Section
+from models import Roles, User, Section
 from app import db
 
 
@@ -35,23 +33,16 @@ class RegisterUserCommand(BaseCommand):
 
 
 class SetUserRoleCommand(BaseCommand):
-    roles = {
-        "guest": 0,
-        "user": 1,
-        "superuser": 2,
-        "admin": 7
-    }
-
     def process(self):
         cmd = self.command.replace('/set_user_role', '')
         user_id, role = cmd.split(":")
         user_id = int(user_id.strip())
         role = role.strip()
-        if role not in self.roles.keys():
+        if role not in [r.name for r in Roles]:
             return "\tRole '{}' does not exist!".format(role)
         user = User.query.filter_by(id=user_id).first()
         if user:
-            user.role = self.roles.get(role)
+            user.role = Roles[role].value
             db.session.commit()
             return "\tUser '{} ({})' updated with new role '{}'!".format(user.name, user.id, role)
         else:
@@ -87,7 +78,8 @@ class HelpCommand(BaseCommand):
     def inline_help(cls, command):
         return {
             "/register_user": " [name]:[class]",
-            "/set_user_role": " [id]:[role], where role is one of the following: <guest,user,superuser,admin>",
+            "/set_user_role": " [id]:[role], where role is one of the following: <{}}>".
+                              format(",".join([r.name for r in Roles])),
         }.get(command, "")
 
 
@@ -116,7 +108,7 @@ def get_command_processor(message):
 def get_person_role(person):
     users = User.query.filter_by(telegram_id=str(person["id"])).all()
     role = max((u.role for u in users), default=0)
-    print('role: ', role)
+    print('role:', role)
     return role
 
 
