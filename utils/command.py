@@ -31,20 +31,31 @@ class RegisterUserCommand(BaseCommand):
         )
         db.session.add(new_user)
         db.session.commit()
-        return "\tUser '" + str(new_user) + "' added!"
+        return "\tUser '{}' added!".format(str(new_user))
 
 
 class SetUserRoleCommand(BaseCommand):
+    roles = {
+        0: "guest",
+        1: "user",
+        2: "superuser",
+        7: "admin"
+    }
+
     def process(self):
         cmd = self.command.replace('/set_user_role', '')
         user_id, role = cmd.split(":")
-        user = User.query.filter_by(id=int(user_id.strip())).first()
+        user_id = int(user_id.strip())
+        role = int(role.strip())
+        if role not in self.roles.keys():
+            return "\tRole '{}' does not exist!".format(role)
+        user = User.query.filter_by(id=user_id).first()
         if user:
-            user.role = int(role.strip())
+            user.role = role
             db.session.commit()
-            return "\tUser '" + str(user.id) + " " + str(user.name) + "' updated!"
+            return "\tUser '{} ({})' updated with new role ''!".format(user.name, user.id, self.roles.get(role))
         else:
-            return "\tUser '" + str(user.id) + "' not found!"
+            return "\tUser '{}' not found!".format(user_id)
 
 
 class ListUsersCommand(BaseCommand):
