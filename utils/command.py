@@ -78,8 +78,8 @@ class HelpCommand(BaseCommand):
     def inline_help(cls, command):
         return {
             "/register_user": " [name]:[class]",
-            "/set_user_role": " [id]:[role], where role is one of the following: <{}}>".
-                              format(",".join([r.name for r in Roles])),
+            "/set_user_role": " [id]:[role], where role is one of the following: <{}>".
+                              format(", ".join([r.name for r in Roles])),
         }.get(command, "")
 
 
