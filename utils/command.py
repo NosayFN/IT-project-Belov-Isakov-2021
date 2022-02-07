@@ -33,6 +33,26 @@ class RegisterUserCommand(BaseCommand):
         return "\tUser '{}' added!".format(str(new_user))
 
 
+class AddSectionCommand(BaseCommand):
+    def process(self):
+        cmd = self.command.replace('/add_section', '')
+        user_id, name = cmd.split(":")
+        user_id = int(user_id.strip())
+        name = name.strip()
+        user = User.query.filter_by(id=user_id).first()
+        if user:
+            new_section = Section(
+                name=name,
+                leader=user.name,
+                leader_id=user_id
+            )
+            db.session.add(new_section)
+            db.session.commit()
+            return "\tSection '{} ({})' added. Leader is '{}'!".format(new_section.name, new_section.id, user.name)
+        else:
+            return "\tLeader id '{}' not found!".format(user_id)
+
+
 class SetUserRoleCommand(BaseCommand):
     def process(self):
         cmd = self.command.replace('/set_user_role', '')
@@ -79,7 +99,8 @@ class HelpCommand(BaseCommand):
     def inline_help(cls, command):
         return {
             "/register_user": " [name]:[class]",
-            "/set_user_role": " [id]:[role], where role is one of the following: <{}>".
+            "/add_section": " [id]:[name], where id is leader id",
+            "/set_user_role": " [id]:[role], where id is user id, role is one of the following: <{}>".
                               format(", ".join([r.name for r in Roles])),
         }.get(command, "")
 
@@ -102,6 +123,8 @@ def get_command_processor(message):
         return ListUsersCommand(command, person, person_role)
     elif is_command_allowed(command, '/set_user_role', person_commands):
         return SetUserRoleCommand(command, person)
+    elif is_command_allowed(command, '/add_section', person_commands):
+        return AddSectionCommand(command, person)
     else:
         return DummyCommand(command, person)
 
