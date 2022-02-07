@@ -39,9 +39,12 @@ class SetUserRoleCommand(BaseCommand):
         cmd = self.command.replace('/set_user_role', '')
         user_id, role = cmd.split(":")
         user = User.query.filter_by(id=int(user_id.strip())).first()
-        user.role = int(role.strip())
-        db.session.commit()
-        return "\tUser '" + str(user.id) + " " + str(user.name) + "' updated!"
+        if user:
+            user.role = int(role.strip())
+            db.session.commit()
+            return "\tUser '" + str(user.id) + " " + str(user.name) + "' updated!"
+        else:
+            return "\tUser '" + str(user.id) + "' not found!"
 
 
 class ListUsersCommand(BaseCommand):
