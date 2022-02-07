@@ -1,12 +1,5 @@
-from enum import Enum
 from app import db
-
-
-class Roles(Enum):
-    guest = 0
-    user = 1
-    superuser = 2
-    admin = 7
+from enums import Roles
 
 
 class User(db.Model):

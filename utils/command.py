@@ -1,4 +1,5 @@
-from models import Roles, User, Section
+from models import User, Section
+from enums import Roles
 from app import db
 
 
