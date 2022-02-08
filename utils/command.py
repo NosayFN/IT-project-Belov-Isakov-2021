@@ -20,7 +20,7 @@ class BaseCommand(object):
             return "\tNot enough parameters!", None
         params = cmd.split(":")
         if len(params) != count:
-            return "\tNot enough parameters! Given {}, expected {}.".format(len(params), count), None
+            return "\tIncorrect number of parameters! Given {}, expected {}.".format(len(params), count), None
         if len(list(p for p in params if len(p) == 0)):
             return "\tAll parameters must be set!", None
         return None, params
