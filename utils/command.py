@@ -14,17 +14,29 @@ class BaseCommand(object):
     def process(self):
         raise Exception('Not implemented')
 
+    def check_cmd_parameters(self, cmd, count):
+        params = cmd.split(":")
+        if len(params) != count:
+            return "\tNot enough parameters! Given {}, expected {}.".format(len(params), count), None
+        if len(list(p for p in params if len(p) == 0)):
+            return "\tAll parameters must be set!", None
+        return None, params
+
 
 class RegisterUserCommand(BaseCommand):
     def process(self):
         cmd = self.command.replace('/register_user', '')
-        name, class_id = cmd.split(":")
+        error, params = self.check_cmd_parameters(cmd, 2)
+        if error:
+            return error
+        name = params[0].strip()
+        class_id = params[1].strip()
         telegram_id = self.person["id"]
         telegram_name = self.person.get("username", None) or \
             " ".join([self.person.get("first_name", "unknown"), self.person.get("last_name", "unknown")])
         new_user = User(
-            name=name.strip(),
-            class_id=class_id.strip(),
+            name=name,
+            class_id=class_id,
             role=1,
             telegram_id=telegram_id,
             telegram_name=telegram_name
@@ -37,9 +49,11 @@ class RegisterUserCommand(BaseCommand):
 class AddSectionCommand(BaseCommand):
     def process(self):
         cmd = self.command.replace('/add_section', '')
-        user_id, name = cmd.split(":")
-        user_id = int(user_id.strip())
-        name = name.strip()
+        error, params = self.check_cmd_parameters(cmd, 2)
+        if error:
+            return error
+        user_id = int(params[0].strip())
+        name = params[1].strip()
         user = User.query.filter_by(id=user_id).first()
         if user:
             new_section = Section(
@@ -57,9 +71,9 @@ class AddSectionCommand(BaseCommand):
 class ChangeSectionCommand(BaseCommand):
     def process(self):
         cmd = self.command.replace('/change_section', '')
-        params = cmd.split(":")
-        if len(params) != 3:
-            return "\tNot enough parameters!"
+        error, params = self.check_cmd_parameters(cmd, 3)
+        if error:
+            return error
         section_id = int(params[0].strip())
         name = params[1].strip()
         leader_id = int(params[2].strip())
@@ -82,8 +96,10 @@ class ChangeSectionCommand(BaseCommand):
 class RemoveSectionCommand(BaseCommand):
     def process(self):
         cmd = self.command.replace('/remove_section', '')
-        section_id = cmd
-        section_id = int(section_id.strip())
+        error, params = self.check_cmd_parameters(cmd, 1)
+        if error:
+            return error
+        section_id = int(params[0].strip())
         section = Section.query.filter_by(id=section_id).first()
         if not section:
             return "\tSection id '{}' not found!".format(section_id)
@@ -108,9 +124,11 @@ class ListSectionsCommand(BaseCommand):
 class SetUserRoleCommand(BaseCommand):
     def process(self):
         cmd = self.command.replace('/set_user_role', '')
-        user_id, role = cmd.split(":")
-        user_id = int(user_id.strip())
-        role = role.strip()
+        error, params = self.check_cmd_parameters(cmd, 2)
+        if error:
+            return error
+        user_id = int(params[0].strip())
+        role = params[1].strip()
         if role not in [r.name for r in Roles]:
             return "\tRole '{}' does not exist!".format(role)
         user = User.query.filter_by(id=user_id).first()
