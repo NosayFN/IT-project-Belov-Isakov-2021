@@ -187,7 +187,7 @@ def get_command_processor(message):
     person = message["from"]
     person_role = get_person_role(person)
     person_commands = get_person_commands(person_role)
-    if command.startswith('/help'):
+    if command.startswith('/help') or command.startswith('/start'):
         return HelpCommand(command, person, person_commands)
     elif is_command_allowed(command, '/register_user', person_commands):
         return RegisterUserCommand(command, person)
@@ -217,6 +217,7 @@ def get_person_role(person):
 def get_person_commands(role):
     # guest commands (role == 0)
     commands = [
+        "/start",
         "/help",
         "/register_user",
     ]
