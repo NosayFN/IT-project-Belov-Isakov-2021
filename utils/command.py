@@ -15,6 +15,9 @@ class BaseCommand(object):
         raise Exception('Not implemented')
 
     def check_cmd_parameters(self, cmd, count):
+        cmd = cmd.strip()
+        if not len(cmd):
+            return "\tNot enough parameters!", None
         params = cmd.split(":")
         if len(params) != count:
             return "\tNot enough parameters! Given {}, expected {}.".format(len(params), count), None
